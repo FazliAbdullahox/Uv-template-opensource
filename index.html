@@ -23,8 +23,8 @@
             }
 
             try {
-                // FIXED: Now looking for the service worker in the root folder
-                await navigator.serviceWorker.register("/sw.js", { scope: __uv$config.prefix });
+                // THE FIX: Pointing exactly to the file in your screenshot
+                await navigator.serviceWorker.register("/uv-sw.js", { scope: __uv$config.prefix });
                 
                 statusText.innerText = "Connecting to proxy...";
                 
@@ -33,7 +33,7 @@
                 window.location.href = proxiedUrl;
                 
             } catch (error) {
-                statusText.innerText = "Error: Still can't find sw.js. It might be named differently in your repo.";
+                statusText.innerText = "Error: " + error.message;
             }
         }
 
