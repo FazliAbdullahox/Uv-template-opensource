@@ -1,6 +1,6 @@
 self.__uv$config = {
     prefix: '/uv/service/',
-    bare: 'https://bare.benrogo.net/', // <--- THIS IS THE ONLY LINE YOU CHANGE
+    bare: 'https://tomp.app/', // <--- THIS IS THE ONLY LINE YOU CHANGE
     encodeUrl: Ultraviolet.codec.xor.encode,
     decodeUrl: Ultraviolet.codec.xor.decode,
     handler: '/uv/uv.handler.js',
