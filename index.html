@@ -3,31 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <title>Auto-Launch Proxy</title>
-    <script src="/uv/uv.bundle.js"></script>
-    <script src="/uv/uv.config.js"></script>
+    <script src="/uv/uv.bundle.js" onerror="alert('Error: Missing uv.bundle.js. Check your folders!')"></script>
+    <script src="/uv/uv.config.js" onerror="alert('Error: Missing uv.config.js. Check your folders!')"></script>
 </head>
 <body style="background-color: #111; color: white; font-family: sans-serif; text-align: center; padding-top: 20%;">
     
-    <h2>Loading your link...</h2>
+    <h2 id="status">Loading your link...</h2>
 
     <script>
         // --- PUT YOUR LINK HERE ---
-        const targetUrl = "https://cine-hub-blocked.netlify.app"; 
+        const targetUrl = "https://example.com"; 
         
-        if ("serviceWorker" in navigator) {
-            // Register the UV service worker
-            navigator.serviceWorker.register("/uv/sw.js", {
-                scope: __uv$config.prefix
-            }).then(() => {
-                // Encode the link and auto-redirect
+        async function launchProxy() {
+            const statusText = document.getElementById("status");
+
+            if (!("serviceWorker" in navigator)) {
+                statusText.innerText = "Error: Your browser doesn't support Service Workers.";
+                return;
+            }
+
+            try {
+                // This will try the two most common template file names automatically
+                try {
+                    await navigator.serviceWorker.register("/uv/sw.js", { scope: __uv$config.prefix });
+                } catch (e) {
+                    await navigator.serviceWorker.register("/uv/uv.sw.js", { scope: __uv$config.prefix });
+                }
+                
+                statusText.innerText = "Connecting to proxy...";
+                
+                // Encode and auto-redirect
                 const proxiedUrl = __uv$config.prefix + __uv$config.encodeUrl(targetUrl);
                 window.location.href = proxiedUrl;
-            }).catch((error) => {
-                console.error("Service Worker failed to register:", error);
-            });
-        } else {
-            alert("Your browser doesn't support Service Workers.");
+                
+            } catch (error) {
+                // If it completely fails, it prints the error on the screen
+                statusText.innerText = "Fatal Error: Could not start the service worker.";
+            }
         }
+
+        // Run the function
+        launchProxy();
     </script>
 </body>
 </html>
