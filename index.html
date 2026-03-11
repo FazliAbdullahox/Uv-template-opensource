@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Auto-Launch Proxy</title>
-    <script src="/uv/uv.bundle.js" onerror="alert('Error: Missing uv.bundle.js. Check your folders!')"></script>
-    <script src="/uv/uv.config.js" onerror="alert('Error: Missing uv.config.js. Check your folders!')"></script>
+    <script src="/uv/uv.bundle.js"></script>
+    <script src="/uv/uv.config.js"></script>
 </head>
 <body style="background-color: #111; color: white; font-family: sans-serif; text-align: center; padding-top: 20%;">
     
@@ -18,17 +18,13 @@
             const statusText = document.getElementById("status");
 
             if (!("serviceWorker" in navigator)) {
-                statusText.innerText = "Error: Your browser doesn't support Service Workers.";
+                statusText.innerText = "Error: Browser doesn't support Service Workers.";
                 return;
             }
 
             try {
-                // This will try the two most common template file names automatically
-                try {
-                    await navigator.serviceWorker.register("/uv/sw.js", { scope: __uv$config.prefix });
-                } catch (e) {
-                    await navigator.serviceWorker.register("/uv/uv.sw.js", { scope: __uv$config.prefix });
-                }
+                // FIXED: Now looking for the service worker in the root folder
+                await navigator.serviceWorker.register("/sw.js", { scope: __uv$config.prefix });
                 
                 statusText.innerText = "Connecting to proxy...";
                 
@@ -37,12 +33,10 @@
                 window.location.href = proxiedUrl;
                 
             } catch (error) {
-                // If it completely fails, it prints the error on the screen
-                statusText.innerText = "Fatal Error: Could not start the service worker.";
+                statusText.innerText = "Error: Still can't find sw.js. It might be named differently in your repo.";
             }
         }
 
-        // Run the function
         launchProxy();
     </script>
 </body>
